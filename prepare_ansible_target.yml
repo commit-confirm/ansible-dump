@@ -1,0 +1,28 @@
+---
+# Run with ansible-playbook <filename> -k
+#       (make sure to add the IPs of the maching you want to manage to a ansible host file first)
+
+  hosts: all
+  gather_facts: False
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  tasks:
+          - name: Install Python 2
+            raw: test -e /usr/bin/python || (apt-get update && apt-get install -y python)
+
+          - name: Fancy way of doing auth_keys
+            authorized_key: user=root
+                            exclusive=no
+                            key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+          #- name: Create /root/.ssh
+          #  file: path=/root/.ssh state=directory mode=0700
+          #
+          #- name: Create /root.ssh/authorized_keys from our local ssh pubkey
+          #  lineinfile: dest=/root/.ssh/authorized_keys line="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+          #
+          #  Gather facts is on by default and define at a playbook level. 
+          #  This book has it disabled as it required python to be installed which it wont be for the initial bootstrap

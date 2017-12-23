@@ -1,0 +1,13 @@
+---
+# Run with ansible-playbook <filename> -k
+#       (make sure to add the IPs of the maching you want to manage to a ansible host file first)
+- hosts: all
+  gather_facts: False
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+
+  tasks:
+          - name: Install Python 2
+            raw: test -e /usr/bin/python || (apt-get update && apt-get install -y python)
